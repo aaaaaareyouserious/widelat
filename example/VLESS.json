@@ -1,0 +1,78 @@
+{
+  "log": {
+    "error": "/var/log/remnanode/error.log",
+    "access": "/var/log/remnanode/access.log",
+    "dnsLog": true,
+    "loglevel": "warning",
+    "maskAddress": "quarter"
+  },
+  "dns": {
+    "tag": "dns_inbound",
+    "servers": ["https://1.1.1.1/dns-query", "1.1.1.1", "localhost"],
+    "queryStrategy": "UseIP"
+  },
+  "inbounds": [
+    {
+      "tag": "hongkong",
+      "port": 443,
+      "listen": "::",
+      "protocol": "vless",
+      "settings": {
+        "flow": "xtls-rprx-vision",
+        "clients": [],
+        "decryption": "none"
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": true,
+        "destOverride": ["http", "tls", "quic"],
+        "metadataOnly": false
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "sockopt": {
+          "tcpFastOpen": true
+        },
+        "security": "reality",
+        "realitySettings": {
+          "dest": "example.com:443",
+          "show": false,
+          "shortIds": [""],
+          "privateKey": "",
+          "fingerprint": "chrome",
+          "serverNames": ["example.com"]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      }
+    },
+    {
+      "tag": "blocked",
+      "protocol": "blackhole",
+      "settings": {}
+    }
+  ],
+  "routing": {
+    "rules": [
+      {
+        "ip": ["geoip:private"],
+        "type": "field",
+        "outboundTag": "blocked"
+      }
+    ],
+    "domainMatcher": "mph",
+    "domainStrategy": "IPIfNonMatch"
+  },
+  "stats": {},
+  "version": {
+    "max": "",
+    "min": "25.12.8"
+  }
+}
